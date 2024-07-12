@@ -1,14 +1,12 @@
 ---
-name: HTML Starter
-slug: html-starter-with-analytics
-description: HTML5 template with analytics and advanced routing configuration.
-deployUrl: https://vercel.com/new/clone?repository-url=https://github.com/vercel/examples/tree/main/solutions/html&project-name=html
+name: Edukasi Bahaya Judi
+slug: edukasi-bahaya-judi
+description: Edukasi tentang bahaya judi online menggunakan web, menunjukkan simulasi dan kalkulator untuk memahami risiko perjudian.
+deployUrl: https://edu-judi.wahyudi.dev
 relatedTemplates:
   - nextjs-boilerplate
 ---
 
-# HTML Starter
+# Edukasi Bahaya Judi
 
-This is a starter HTML5 templates which is configured with Vercel Analytics (through a `script` tag), advanced routing with [Vercel Edge Middleware](https://vercel.com/docs/concepts/functions/edge-middleware), as well as some basic styles
-
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/vercel/examples/tree/main/solutions/html&project-name=html)
+Web ini berisi edukasi tentang bahaya judi online, termasuk simulasi perjudian dan kalkulator expected value. Anda dapat melihat bagaimana saldo Anda dapat berfluktuasi dalam jangka pendek untuk berbagai jenis permainan dan memahami potensi keuntungan atau kerugian jangka panjang.
