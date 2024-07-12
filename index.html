@@ -1,96 +1,360 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script defer src="/_vercel/insights/script.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@exampledev/new.css@1.1.2/new.min.css"
-    />
-    <title>Vercel HTML Starter</title>
-    <meta
-      name="description"
-      content="High-performance HTML based website template."
-    />
+    <title>Edukasi: Bahaya Judi Online</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      h1,
+      h2 {
+        color: #2c3e50;
+      }
+      .simulator {
+        background-color: #f2f2f2;
+        border: 1px solid #ddd;
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+      button {
+        background-color: #3498db;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+      }
+      button:hover {
+        background-color: #2980b9;
+      }
+      #result,
+      #evResult {
+        font-weight: bold;
+        margin-top: 10px;
+      }
+      .result-item {
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.5s, transform 0.5s;
+        padding: 10px;
+        margin: 5px 0;
+        border-radius: 5px;
+      }
+      .result-item.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+      .win {
+        background-color: rgba(0, 255, 0, 0.1);
+      }
+      .lose {
+        background-color: rgba(255, 0, 0, 0.1);
+      }
+      .big-win {
+        background-color: rgba(0, 255, 0, 0.3);
+        font-weight: bold;
+      }
+      .big-lose {
+        background-color: rgba(255, 0, 0, 0.3);
+        font-weight: bold;
+      }
+      #spinnerContainer {
+        display: none;
+        text-align: center;
+        margin-top: 20px;
+      }
+      .spinner {
+        border: 4px solid #f3f3f3;
+        border-top: 4px solid #3498db;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        display: inline-block;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      .game-options,
+      .bet-options {
+        margin-bottom: 15px;
+      }
+      select,
+      input[type="number"] {
+        padding: 5px;
+        margin-right: 10px;
+      }
+      .game-info {
+        background-color: #e8f4f8;
+        padding: 10px;
+        border-radius: 5px;
+        margin-bottom: 15px;
+      }
+      .admin-controls {
+        background-color: #f8d7da;
+        border: 1px solid #f5c6cb;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 5px;
+      }
+      .admin-controls h3 {
+        color: #721c24;
+        margin-top: 0;
+      }
+    </style>
   </head>
   <body>
-    <h1>Vercel HTML Starter</h1>
+    <h1>Edukasi: Bahaya Judi Online</h1>
+
+    <h2>Simulasi Judi Online</h2>
+    <div class="simulator">
+      <div class="game-options">
+        <label for="gameType">Pilih Jenis Permainan:</label>
+        <select id="gameType" onchange="updateGameInfo()">
+          <option value="roulette">Roulette</option>
+          <option value="blackjack">Blackjack</option>
+          <option value="slots">Slot Machine</option>
+        </select>
+      </div>
+      <div class="game-info" id="gameInfo"></div>
+      <div class="bet-options">
+        <label for="betAmount">Jumlah Taruhan: Rp</label>
+        <input
+          type="number"
+          id="betAmount"
+          min="1000"
+          max="1000000"
+          value="10000"
+        />
+      </div>
+      <div class="admin-controls">
+        <h3>Kontrol Admin (Simulasi Manipulasi)</h3>
+        <label for="adminWinProb">Set Probabilitas Menang (%):</label>
+        <input
+          type="number"
+          id="adminWinProb"
+          min="0"
+          max="100"
+          step="1"
+          value="50"
+        />
+        <button onclick="setAdminControls()">Terapkan</button>
+      </div>
+      <div>
+        <label for="saldoInput">Saldo: Rp</label>
+        <input type="number" id="saldoInput" min="0" value="1000000" />
+        <button onclick="updateSaldo()">Update Saldo</button>
+      </div>
+      <p id="saldoDisplay">Saldo: Rp1,000,000</p>
+      <button onclick="runSimulation()" id="simulateButton">
+        Jalankan Simulasi
+      </button>
+      <div id="spinnerContainer">
+        <div class="spinner"></div>
+        <p>Menunggu hasil...</p>
+      </div>
+      <div id="result"></div>
+    </div>
+
+    <h2>Kalkulator Expected Value</h2>
+    <div class="simulator">
+      <label
+        >Probabilitas Menang (%):
+        <input
+          type="number"
+          id="probability"
+          min="0"
+          max="100"
+          step="1"
+          value="50" /></label
+      ><br />
+      <label
+        >Jumlah Taruhan: <input type="number" id="bet" value="100000" /></label
+      ><br />
+      <label
+        >Jumlah Kemenangan:
+        <input type="number" id="win" value="200000" /></label
+      ><br />
+      <button onclick="calculateEV()">Hitung Expected Value</button>
+      <div id="evResult"></div>
+    </div>
+
+    <h2>Penjelasan</h2>
+    <p>Website ini mendemonstrasikan konsep penting dalam perjudian online:</p>
+    <ol>
+      <li>
+        Simulasi Judi Online menunjukkan bagaimana saldo Anda dapat berfluktuasi
+        dalam jangka pendek untuk berbagai jenis permainan.
+      </li>
+      <li>
+        Kalkulator Expected Value membantu Anda memahami potensi keuntungan atau
+        kerugian jangka panjang.
+      </li>
+    </ol>
     <p>
-      This template is a simple, but powerful single
-      <code>index.html</code> file deployed to
-      <a href="https://vercel.com">Vercel</a>. When your site is deployed, all
-      static assets (like HTML, JavaScript, CSS, images, and more) are deployed
-      globally to every
-      <a href="https://vercel.com/docs/concepts/edge-network/overview"
-        >Vercel Edge Network</a
-      >
-      region.
+      Penting untuk diingat bahwa dalam praktiknya, situs judi online selalu
+      memiliki keunggulan, membuat perjudian menjadi aktivitas yang sangat
+      berisiko dan berpotensi merugikan.
     </p>
-    <h2>Simple, privacy-friendly analytics</h2>
-    <p>
-      Want to understand your visitor traffic? Vercel Analytics gives you
-      first-party, privacy-friendly traffic analytics for your HTML site. This
-      template is already configured using the following script:
-    </p>
-    <pre><code>&lt;script defer src="/_vercel/insights/script.js"&gt;&lt;/script&gt;</code></pre>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/analytics">Vercel Analytics</a>.
-    </p>
-    <h2>Integrated with git</h2>
-    <p>
-      Deploying updates to your site is as simple as
-      <code>git push</code> thanks to Vercel's advanced
-      <a href="https://vercel.com/docs/concepts/git">Git Integration</a>.
-      Support for GitHub, GitLab, Bitbucket is zero-configuration, and with the
-      flexible Vercel CLI and API, you can integrate with any tool possible.
-    </p>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/git">Git Integration</a>.
-    </p>
-    <h2>Fast <code>gzip</code> compression</h2>
-    <p>
-      To help ensure the smallest possible file sizes for your static assets,
-      the Vercel Edge Network compresses files by default using
-      <code>gzip</code>. You can also optionally use
-      <code>brotli</code> compressesion if you prefer.
-    </p>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/edge-network/compression"
-        >compression</a
-      >.
-    </p>
-    <h2>Advanced routing configuration</h2>
-    <p>
-      Vercel gives you a variety of ways to configure the routing of your
-      website. For example, adding redirects, rewrites, or headers to your page.
-      While you can use <code>vercel.json</code> to define these through JSON,
-      you can also express your routing configuration as code using
-      <a href="https://vercel.com/docs/concepts/functions/edge-middleware"
-        >Vercel Edge Middleware</a
-      >.
-    </p>
-    <p>
-      Middleware runs before the
-      <a href="https://vercel.com/docs/concepts/edge-network/caching"
-        >Vercel Edge Network Cache</a
-      >, so you can configure routing exactly as your application needs. For
-      example, this template uses <code>middleware.js</code> defined in the root
-      of the repository to add additional security headers to the site:
-    </p>
-    <pre><code>referrer-policy: origin-when-cross-origin
-strict-transport-security: max-age=31536000; includeSubDomains; preload
-x-content-type-options: nosniff
-x-dns-prefetch-control: on
-x-frame-options: DENY</code></pre>
-    <p>
-      Learn more about
-      <a href="https://vercel.com/docs/concepts/functions/edge-middleware"
-        >Vercel Edge Middleware</a
-      >.
-    </p>
+
+    <script>
+      const gameInfo = {
+        roulette: {
+          name: "Roulette",
+          description:
+            "Permainan klasik dengan roda berputar. Peluang menang sekitar 47.4% untuk taruhan merah/hitam.",
+          defaultWinProbability: 47.4,
+          maxMultiplier: 35,
+        },
+        blackjack: {
+          name: "Blackjack",
+          description:
+            "Permainan kartu melawan dealer. Dengan strategi dasar, peluang menang sekitar 42.5%.",
+          defaultWinProbability: 42.5,
+          maxMultiplier: 3,
+        },
+        slots: {
+          name: "Slot Machine",
+          description:
+            "Mesin slot digital. Peluang menang sangat rendah, sekitar 10% per putaran, tapi dengan potensi kemenangan besar.",
+          defaultWinProbability: 10,
+          maxMultiplier: 10,
+        },
+      };
+
+      let currentWinProbability = 50;
+      let saldo = localStorage.getItem("saldo")
+        ? parseInt(localStorage.getItem("saldo"))
+        : 1000000;
+
+      function updateSaldoDisplay() {
+        document.getElementById(
+          "saldoDisplay"
+        ).textContent = `Saldo: Rp${saldo.toLocaleString()}`;
+        document.getElementById("saldoInput").value = saldo;
+      }
+
+      function updateSaldo() {
+        saldo = parseInt(document.getElementById("saldoInput").value);
+        localStorage.setItem("saldo", saldo);
+        updateSaldoDisplay();
+      }
+
+      function updateGameInfo() {
+        const gameType = document.getElementById("gameType").value;
+        const info = gameInfo[gameType];
+        document.getElementById("gameInfo").innerHTML = `
+                <h3>${info.name}</h3>
+                <p>${info.description}</p>
+                <p>Potensi kemenangan maksimal: ${
+                  info.maxMultiplier
+                }x taruhan</p>
+                <p>Peluang menang default: ${info.defaultWinProbability.toFixed(
+                  1
+                )}%</p>
+            `;
+        document.getElementById("adminWinProb").value =
+          info.defaultWinProbability;
+        currentWinProbability = info.defaultWinProbability;
+      }
+
+      function setAdminControls() {
+        currentWinProbability = parseFloat(
+          document.getElementById("adminWinProb").value
+        );
+        alert(
+          `Probabilitas menang disetel ke ${currentWinProbability.toFixed(1)}%`
+        );
+      }
+
+      function judiOnline(taruhan, gameType) {
+        const info = gameInfo[gameType];
+        const menang = Math.random() < currentWinProbability / 100;
+        if (menang) {
+          const multiplier = Math.random() * (info.maxMultiplier - 1) + 1;
+          return Math.round(taruhan * multiplier);
+        }
+        return 0;
+      }
+
+      async function runSimulation() {
+        document.getElementById("simulateButton").disabled = true;
+        document.getElementById("spinnerContainer").style.display = "block";
+        document.getElementById("result").innerHTML = "";
+
+        const gameType = document.getElementById("gameType").value;
+        const taruhan = parseInt(document.getElementById("betAmount").value);
+
+        for (let i = 0; i < 10; i++) {
+          await new Promise((resolve) => setTimeout(resolve, 2000)); // Delay 2 detik
+
+          saldo -= taruhan;
+          const menang = judiOnline(taruhan, gameType);
+          saldo += menang;
+
+          const resultItem = document.createElement("div");
+          let className = menang > 0 ? "win" : "lose";
+          if (menang > taruhan * 5) className = "big-win";
+          if (menang === 0 && taruhan > 100000) className = "big-lose";
+          resultItem.className = `result-item ${className}`;
+          resultItem.innerHTML = `Putaran ${i + 1}: ${
+            menang > 0
+              ? "Menang Rp" + menang.toLocaleString()
+              : "Kalah Rp" + taruhan.toLocaleString()
+          }, Saldo: Rp${saldo.toLocaleString()}`;
+
+          document.getElementById("result").appendChild(resultItem);
+
+          await new Promise((resolve) =>
+            setTimeout(() => {
+              resultItem.classList.add("show");
+              resolve();
+            }, 100)
+          );
+
+          if (saldo <= 0) {
+            const gameOverItem = document.createElement("div");
+            gameOverItem.className = "result-item big-lose";
+            gameOverItem.innerHTML =
+              "<strong>Game Over! Anda kehabisan saldo.</strong>";
+            document.getElementById("result").appendChild(gameOverItem);
+            break;
+          }
+        }
+
+        localStorage.setItem("saldo", saldo);
+        updateSaldoDisplay();
+        document.getElementById("spinnerContainer").style.display = "none";
+        document.getElementById("simulateButton").disabled = false;
+      }
+
+      function calculateEV() {
+        const prob =
+          parseFloat(document.getElementById("probability").value) / 100;
+        const bet = parseFloat(document.getElementById("bet").value);
+        const win = parseFloat(document.getElementById("win").value);
+
+        const ev = prob * win - (1 - prob) * bet;
+        document.getElementById(
+          "evResult"
+        ).innerHTML = `Expected Value: Rp${ev.toLocaleString()}`;
+      }
+
+      // Inisialisasi informasi permainan dan saldo saat halaman dimuat
+      updateGameInfo();
+      updateSaldoDisplay();
+    </script>
   </body>
 </html>
